@@ -39,12 +39,11 @@ class FtpDownloader:
         user_id = config_dict[cls_name].get("user_id", None)
         pwd = config_dict[cls_name].get("pwd", None)
         reg_ex = config_dict[cls_name].get("reg_ex", ".*")
-        return FtpDownloader(url,ftp_path, user_id, pwd, reg_ex)
+        return FtpDownloader(url, ftp_path, user_id, pwd, reg_ex)
 
-    def __call__(self, local_path):
+    def iterate(self, local_path):
         ftp = None
         re_obj = re.compile(self.reg_ex)
-        result = []
         try:
             ftp = self.ftp_client
             # login
@@ -58,11 +57,14 @@ class FtpDownloader:
 
             for filename in filter(lambda f: re_obj.match(f) is not None, file_names):
                 self.logger.info("Downloading {} ..".format(filename))
-                result.append(self._download_file(ftp, filename, local_path))
+                yield self._download_file(ftp, filename, local_path)
+
 
         finally:
             if ftp is not None: ftp.quit()
-        return result
+
+    def __call__(self, local_path):
+        return list(self.iterate(local_path))
 
     @staticmethod
     def _download_file(ftp_connection, remote_file, local_path):

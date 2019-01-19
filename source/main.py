@@ -9,6 +9,7 @@ from ftp_downloader import FtpDownloader
 
 
 def run(local_path, config_file=None, config_str=None, s3uri=None):
+    logger = logging.getLogger(__name__)
     if config_str is None:
         # If no config str provided, load from file or default
         if config_file is None:
@@ -19,16 +20,15 @@ def run(local_path, config_file=None, config_str=None, s3uri=None):
 
     config_dict = json.loads(config_str)
 
-    try:
-
-        downloader = FtpDownloader.load_from_config(config_dict)
-        downloader(local_path=local_path)
-
-    finally:
-        # Optionally upload the files to s3
+    downloader = FtpDownloader.load_from_config(config_dict)
+    for f in downloader.iterate(local_path=local_path):
         if s3uri is not None:
+            # Upload to s3 and remove local copy
             s3io = AwsS3Io()
-            s3io.uploadfiles(local_path, s3uri)
+            s3io.uploadfile(f, s3uri)
+            # TODO: Use flag to have option to retain local copy
+            logger.info("Uploaded to s3 and deleted local copy..{}".format(f))
+            os.remove(f)
 
 
 if __name__ == '__main__':
