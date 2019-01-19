@@ -4,11 +4,11 @@ import re
 import os
 
 """
-Downloads the files from Pubmed
+Downloads the files through FTP
 """
 
 
-class PubmedDownloader:
+class FtpDownloader:
 
     def __init__(self, host, user_id=None, pwd=None):
         self.pwd = pwd
@@ -35,7 +35,7 @@ class PubmedDownloader:
         user_id = config_dict[__name__].get("user_id", None)
         pwd = config_dict[__name__].get("pwd", None)
 
-        return PubmedDownloader(url, user_id, pwd)
+        return FtpDownloader(url, user_id, pwd)
 
     def __call__(self, ftp_path, local_path, reg_ex=".*"):
         ftp = None

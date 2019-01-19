@@ -4,17 +4,17 @@ from unittest import TestCase
 
 import os
 
-from pubmed_downloader import PubmedDownloader
+from ftp_downloader import FtpDownloader
 
 
-class ITTestPubmedDownloader(TestCase):
+class ITTestFtpDownloader(TestCase):
 
     def setUp(self):
         fileConfig(os.path.join(os.path.dirname(__file__), "logger.ini"))
 
     def test___call__(self):
         # Arrange
-        sut = PubmedDownloader("ftp.ncbi.nlm.nih.gov")
+        sut = FtpDownloader("ftp.ncbi.nlm.nih.gov")
         temp_local_dir = tempfile.mkdtemp()
         expected_files_len = 1
 
