@@ -71,7 +71,7 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
 
     parser.add_argument("containerimage",
-                        help="Container image, e.g 346001917.dkr.ecr.us-east-2.amazonaws.com/aws-batch-sample-python")
+                        help="Container image, e.g lanax/pubmed-downloader:release-0.2")
 
     parser.add_argument("s3uri",
                         help="The s3 uri path to upload the files to")
