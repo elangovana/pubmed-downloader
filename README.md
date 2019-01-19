@@ -8,6 +8,19 @@ Downloads the entire pubmed abstracts as in from pubmed using FTP as detailed in
 ## Pre-requisites
 1. Python 3.5
 
+2. Python Virtual environment setup. This is an example for python in OSX
+    ```bash
+    python -m pip install --user virtualenv
+    mkdir ~/virtualenvironment
+    python -m virtualenv  ~/virtualenvironment/pubmeddownloader
+    source ~/virtualenvironment/pubmeddownloader/bin/activate
+    ```
+    
+# Set up
+1. Install dependencies within your virtual environment
+    ```bash
+    pip install -r source/requirements.txt
+    ```
 
 ## How to run locally
 1. This is an example on how to run on OSX, Unix, Linux machines. This downloads file using the config [tests/config.json](tests/config.json) and saves them to ./tmp
