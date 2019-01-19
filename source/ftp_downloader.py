@@ -44,6 +44,8 @@ class FtpDownloader:
     def iterate(self, local_path):
         ftp = None
         re_obj = re.compile(self.reg_ex)
+        # Make the local path and ignore if exists..
+        os.makedirs(local_path, exist_ok=True)
         try:
             ftp = self.ftp_client
             # login
