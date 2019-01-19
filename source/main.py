@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Download files from ftp location')
 
-    parser.add_argument('localpath', help="The local directory to save the files to")
+    parser.add_argument('outputdir', help="The local directory to save the files to")
 
     parser.add_argument('--config-file', default=None, help="A config file to use")
 
@@ -39,4 +39,4 @@ if __name__ == '__main__':
     # Start process
     logger.info("Starting run with arguments...\n{}".format(args.__dict__))
 
-    run(args.localpath, args.config_file)
+    run(args.outputdir, args.config_file)
