@@ -28,9 +28,11 @@ class AwsS3Io:
         self.__client__ = value
 
     def uploadfiles(self, local_dir, s3path, max_num_threads=5):
+        files_to_upload = glob.glob("{}/*.*".format(local_dir))
 
+        # use thread pool to parallel process
         pool = ThreadPool(max_num_threads)
-        pool.map(lambda x: self.uploadfile(os.path.join(local_dir, x), s3path), glob.glob(local_dir))
+        pool.map(lambda x: self.uploadfile(x, s3path), files_to_upload)
         pool.close()
         pool.join()
 

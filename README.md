@@ -16,6 +16,21 @@ Downloads the entire pubmed abstracts as in from pubmed using FTP as detailed in
     mkdir -p ./tmp
     python ./source/main.py ./tmp --file-config ./tests/config.json 
  
-    #This is another option
+    ```
+    
+1. This is an example on how to run on OSX, Unix, Linux machines. This downloads file using the config passed in as arg and saves them to ./tmp
+    ```bash
+    export PYTHONPATH="./source"
+    mkdir -p ./tmp
+ 
     python ./source/main.py ./tmp --json-config '{"FtpDownloader": {  "host": "ftp.ncbi.nlm.nih.gov","reg_ex": "pubmed19n0499\\.xml\\.gz$","ftp_path":"/pubmed/baseline/"}}'
+    ```
+
+    
+1. This is an example on how to run on OSX, Unix, Linux machines. This downloads file using the config passed in as arg and saves and upload to s3 s3://mybucket/prefix
+    ```bash
+    export PYTHONPATH="./source"
+    mkdir -p ./tmp
+ 
+    python ./source/main.py ./tmp --s3uri "s3://mybucket/prefix" --json-config '{"FtpDownloader": {  "host": "ftp.ncbi.nlm.nih.gov","reg_ex": "pubmed19n0499\\.xml\\.gz$","ftp_path":"/pubmed/baseline/"}}'
     ```
