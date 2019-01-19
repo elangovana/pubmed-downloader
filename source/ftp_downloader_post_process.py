@@ -42,6 +42,7 @@ Uses worker queues to perform the postprocessing
             if item is None:
                 return
             self.post_processor(item)
+            read_queue.task_done()
 
     def __call__(self, *args, **kwargs):
         items = self.ftp_downloader(*args, **kwargs)
