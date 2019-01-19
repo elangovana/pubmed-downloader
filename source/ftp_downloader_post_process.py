@@ -2,6 +2,7 @@ import logging
 
 from queue import Queue
 from threading import Thread
+import concurrent.futures
 
 """
 Post processing decorater logic for FtpDownloader
@@ -26,15 +27,17 @@ Uses worker queues to perform the postprocessing
         """
         # use thread pool to parallel process
         q = Queue()
-        t = Thread(target=lambda: self._worker(q))
-        t.start()
 
-        for f in self.ftp_downloader.iterate(*args, **kwargs):
-            q.put(f)
-            yield f
-        # poison pill
-        q.put(None)
-        t.join()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(self._worker, q)
+
+            for f in self.ftp_downloader.iterate(*args, **kwargs):
+                q.put(f)
+                yield f
+            # poison pill
+            q.put(None)
+
+            future.result()
 
     def _worker(self, read_queue):
         while True:

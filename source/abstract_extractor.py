@@ -20,11 +20,18 @@ class AbstractExtractor:
         result = []
         for ele_article in self._iter_elements_by_name(xml_handle, "PubmedArticle", self.namespaces):
             title = ele_article.find("MedlineCitation/Article/ArticleTitle").text
-            abstract = ele_article.find("MedlineCitation/Article/Abstract/AbstractText").text
             id = ele_article.find("MedlineCitation/PMID").text
-            year = ele_article.find("MedlineCitation/Article/Journal/JournalIssue/PubDate/Year").text
-            month = ele_article.find("MedlineCitation/Article/Journal/JournalIssue/PubDate/Month").text
-            day = ele_article.find("MedlineCitation/Article/Journal/JournalIssue/PubDate/Day").text
+
+            # Some articles don't seem to have abstract
+            # e.g pubmed id 15267574
+            abstract = self._get_text(ele_article, "MedlineCitation/Article/Abstract/AbstractText", None)
+            if abstract is None:
+                continue
+
+            # Day is optional
+            year = self._get_text(ele_article, "MedlineCitation/Article/Journal/JournalIssue/PubDate/Year", None)
+            month = self._get_text(ele_article, "MedlineCitation/Article/Journal/JournalIssue/PubDate/Month", None)
+            day = self._get_text(ele_article, "MedlineCitation/Article/Journal/JournalIssue/PubDate/Day", None)
 
             result.append({"pubmed_id": id,
                            "article_title": title,
@@ -36,6 +43,13 @@ class AbstractExtractor:
                            }})
 
         return result
+
+    def _get_text(self, element, path, default_val):
+        ele = element.find(path)
+        val = default_val
+        if ele is not None:
+            val = ele.text
+        return val
 
     def dump(self, xml_handle, out_handle):
         result = self.__call__(xml_handle)
