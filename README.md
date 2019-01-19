@@ -10,7 +10,7 @@ Downloads the entire pubmed abstracts as in from pubmed using FTP as detailed in
 
 
 ## How to run
-1. This is an example on how to run on OSX, Unix, Linux machines
+1. This is an example on how to run on OSX, Unix, Linux machines. This downloads file using the config [tests/config.json](tests/config.json) and saves them to ./tmp
     ```bash
     export PYTHONPATH="./source"
     mkdir -p ./tmp
