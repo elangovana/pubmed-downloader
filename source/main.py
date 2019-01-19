@@ -3,11 +3,10 @@ import logging
 import os
 
 import sys
-from queue import Queue
-from threading import Thread
 
 from awsS3Io import AwsS3Io
 from ftp_downloader import FtpDownloader
+from ftp_downloader_post_process import FtpDownloaderPostProcess
 
 
 def run(local_path, config_file=None, config_str=None, s3uri=None):
@@ -21,28 +20,14 @@ def run(local_path, config_file=None, config_str=None, s3uri=None):
 
     config_dict = json.loads(config_str)
 
-    downloader = FtpDownloader.load_from_config(config_dict)
+    downloader_ftp = FtpDownloader.load_from_config(config_dict)
+    # Wrap the downloader_ftp with a post processing decorater to upload to s3
+    downloader = FtpDownloaderPostProcess(downloader_ftp, lambda x: upload(x, s3uri))
 
-    # use thread pool to parallel process
-    q = Queue()
-    t = Thread(target=lambda: worker(q, s3uri))
-    t.start()
-    for f in downloader.iterate(local_path=local_path):
-        q.put(f)
-    # poison pill
-    q.put(None)
-    t.join()
+    list(downloader.iterate(local_path=local_path))
 
 
-def worker(read_queue, s3uri):
-    while True:
-        item = read_queue.get()
-        if item is None:
-            return
-        post_process(item, s3uri)
-
-
-def post_process(f, s3uri):
+def upload(f, s3uri):
     logger = logging.getLogger(__name__)
     if s3uri is not None:
         # Upload to s3 and remove local copy
