@@ -22,6 +22,8 @@ if __name__ == '__main__':
 
     parser.add_argument('localpath', help="The local directory to save the files to")
 
-    parser.add_argument('--regex', help="The regular expression to file", default=".*")
-
     parser.add_argument('--config-file', default=None, help="A config file to use")
+
+    args = parser.parse_args()
+
+    run(args.localpath, args.config_file)
