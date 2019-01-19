@@ -14,12 +14,12 @@ class ITTestFtpDownloader(TestCase):
 
     def test___call__(self):
         # Arrange
-        sut = FtpDownloader("ftp.ncbi.nlm.nih.gov")
+        sut = FtpDownloader("ftp.ncbi.nlm.nih.gov","/pubmed/baseline/", reg_ex="pubmed19n0499\.xml\.gz$")
         temp_local_dir = tempfile.mkdtemp()
         expected_files_len = 1
 
         # Act
-        actual = sut("/pubmed/baseline/", temp_local_dir, "pubmed19n0499\.xml\.gz$")
+        actual = sut( temp_local_dir)
 
         # Assert
         self.assertEqual(len(actual), expected_files_len)

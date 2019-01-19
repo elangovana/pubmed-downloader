@@ -1,0 +1,7 @@
+{
+  "FtpDownloader": {
+    "host": "ftp.ncbi.nlm.nih.gov",
+    "reg_ex": "pubmed19n0499\\.xml\\.gz$",
+    "ftp_path":"/pubmed/baseline/"
+  }
+}

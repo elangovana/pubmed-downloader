@@ -22,11 +22,11 @@ class TestFtpDownloader(TestCase):
         mock_ftp_client = Mock()
         mock_ftp_client.nlst.return_value = ["abc.xml", "pubmed19n049.xml", "pubmed19n041.xml", "pubmed19n041.xml.gz"]
 
-        sut = FtpDownloader("ftp.ncbi.nlm.nih.gov")
+        sut = FtpDownloader("ftp.ncbi.nlm.nih.gov", "/pubmed/baseline/", reg_ex="pubmed19n04.\.xml$")
         sut.ftp_client = mock_ftp_client
 
         # Act
-        actual = sut("/pubmed/baseline/", temp_local_dir, "pubmed19n04.\.xml$")
+        actual = sut(temp_local_dir)
 
         # Assert
         self.assertEqual(len(actual), expected_files_len)

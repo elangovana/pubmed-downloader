@@ -10,7 +10,9 @@ Downloads the files through FTP
 
 class FtpDownloader:
 
-    def __init__(self, host, user_id=None, pwd=None):
+    def __init__(self, host, ftp_path, user_id=None, pwd=None, reg_ex=".*"):
+        self.ftp_path = ftp_path
+        self.reg_ex = reg_ex
         self.pwd = pwd
         self.user_id = user_id
         self.host = host
@@ -31,15 +33,17 @@ class FtpDownloader:
 
     @staticmethod
     def load_from_config(config_dict):
-        url = config_dict[__name__]["host"]
-        user_id = config_dict[__name__].get("user_id", None)
-        pwd = config_dict[__name__].get("pwd", None)
+        cls_name = "FtpDownloader"
+        url = config_dict[cls_name]["host"]
+        ftp_path = config_dict[cls_name]["ftp_path"]
+        user_id = config_dict[cls_name].get("user_id", None)
+        pwd = config_dict[cls_name].get("pwd", None)
+        reg_ex = config_dict[cls_name].get("reg_ex", ".*")
+        return FtpDownloader(url,ftp_path, user_id, pwd, reg_ex)
 
-        return FtpDownloader(url, user_id, pwd)
-
-    def __call__(self, ftp_path, local_path, reg_ex=".*"):
+    def __call__(self, local_path):
         ftp = None
-        re_obj = re.compile(reg_ex)
+        re_obj = re.compile(self.reg_ex)
         result = []
         try:
             ftp = self.ftp_client
@@ -49,7 +53,7 @@ class FtpDownloader:
             else:
                 ftp.login(self.user_id, self.pwd)
 
-            ftp.cwd(ftp_path)
+            ftp.cwd(self.ftp_path)
             file_names = ftp.nlst()
 
             for filename in filter(lambda f: re_obj.match(f) is not None, file_names):
