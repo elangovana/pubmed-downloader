@@ -28,23 +28,40 @@ Uses worker queues to perform the postprocessing
         # use thread pool to parallel process
         q = Queue()
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            future = executor.submit(self._worker, q)
+        max_workers = 5
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Set up workers
+            futures = []
+            for i in range(max_workers):
+                futures.append(executor.submit(self._worker, q))
 
-            for f in self.ftp_downloader.iterate(*args, **kwargs):
-                q.put(f)
-                yield f
-            # poison pill
-            q.put(None)
-
-            future.result()
+            # Submit worker jobs
+            # Wrap the main task in a try block so that the queue completes regardless of success/failure of main job
+            try:
+                for f in self.ftp_downloader.iterate(*args, **kwargs):
+                    q.put(f)
+                    yield f
+            finally:
+                # Stop processing
+                # Not doing a queue to join, because if the all workers fail this will hang...
+                # q.join()
+                # poison pill
+                for i in range(max_workers):
+                    q.put(None)
+                for future in futures:
+                    future.result()
 
     def _worker(self, read_queue):
         while True:
             item = read_queue.get()
             if item is None:
                 return
-            self.post_processor(item)
+            try:
+                self.post_processor(item)
+            except Exception as e:
+                self.logger.warning("The task has failed with error ..{}".format(e))
+
+                raise e
             read_queue.task_done()
 
     def __call__(self, *args, **kwargs):
