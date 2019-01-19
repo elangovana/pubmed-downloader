@@ -8,12 +8,16 @@ from awsS3Io import AwsS3Io
 from ftp_downloader import FtpDownloader
 
 
-def run(local_path, config_file=None, s3uri=None):
-    if config_file is None:
-        config_file = os.path.join(os.path.dirname(__file__), "config.json")
+def run(local_path, config_file=None, config_str=None, s3uri=None):
+    if config_str is None:
+        # If no config str provided, load from file or default
+        if config_file is None:
+            config_file = os.path.join(os.path.dirname(__file__), "config.json")
 
-    with open(config_file, "r") as f:
-        config_dict = json.loads(f.read())
+        with open(config_file, "r") as f:
+            config_str = f.read()
+
+    config_dict = json.loads(config_str)
 
     try:
 
@@ -34,7 +38,9 @@ if __name__ == '__main__':
 
     parser.add_argument('outputdir', help="The local directory to save the files to")
 
-    parser.add_argument('--config-file', default=None, help="A config file to use")
+    parser.add_argument('--file-config', default=None, help="A config file to use")
+
+    parser.add_argument('--json-config', default=None, help='A config file to use')
 
     parser.add_argument('--s3uri', default=None,
                         help="The s3 destination to upload the file to, e.g s3://mybucket/myprefix")
@@ -51,4 +57,4 @@ if __name__ == '__main__':
     # Start process
     logger.info("Starting run with arguments...\n{}".format(args.__dict__))
 
-    run(args.outputdir, args.config_file, args.s3uri)
+    run(args.outputdir, args.file_config, args.json_config, args.s3uri)

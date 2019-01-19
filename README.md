@@ -14,5 +14,8 @@ Downloads the entire pubmed abstracts as in from pubmed using FTP as detailed in
     ```bash
     export PYTHONPATH="./source"
     mkdir -p ./tmp
-    python ./source/main.py ./tmp --config-file ./tests/config.json 
+    python ./source/main.py ./tmp --file-config ./tests/config.json 
+ 
+    #This is another option
+    python ./source/main.py ./tmp --json-config '{"FtpDownloader": {  "host": "ftp.ncbi.nlm.nih.gov","reg_ex": "pubmed19n0499\\.xml\\.gz$","ftp_path":"/pubmed/baseline/"}}'
     ```

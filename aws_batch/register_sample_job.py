@@ -21,7 +21,8 @@ class RegisterJob:
         self.account = account or boto3.client('sts').get_caller_identity().get('Account')
         self.region = aws_region or boto3.session.Session().region_name
 
-    def run(self, container_name: str, s3uri_destination: str, job_def_name: str, ncpus: int, memoryInMB):
+    def run(self, container_name: str, s3uri_destination: str, config_json: str, job_def_name: str, ncpus: int,
+            memoryInMB):
         """
         Registers a job with aws batch.
         :param s3uri_destination: the name of the s3 bucket that will hold the data
@@ -52,6 +53,7 @@ class RegisterJob:
         create_role(role_name, assume_role_policy, access_policy, managed_policy_arns)
 
         job_definition = get_job_definition(self.account, self.region, container_name, job_def_name, s3uri_destination,
+                                            config_json,
                                             memoryInMB, ncpus,
                                             role_name)
 
@@ -74,6 +76,9 @@ if __name__ == '__main__':
     parser.add_argument("s3uri",
                         help="The s3 uri path to upload the files to")
 
+    parser.add_argument("jsonconfig",
+                        help="A json formatted string to config to use")
+
     parser.add_argument("--job-name",
                         help="The name of the job", default="pubmed_downloader")
 
@@ -87,6 +92,6 @@ if __name__ == '__main__':
 
     # Register job
     job = RegisterJob()
-    result = job.run(args.containerimage, args.s3uri, args.job_name, args.cpus, args.memoryMb)
+    result = job.run(args.containerimage, args.s3uri, args.jsonconfig, args.job_name, args.cpus, args.memoryMb)
 
     logger.info("Completed\n{}".format(json.dumps(result, indent=4)))

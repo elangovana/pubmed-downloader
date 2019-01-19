@@ -1,4 +1,4 @@
-def get_job_definition(account, region, container_name, job_def_name, job_param_s3uri_destination, memoryInMB, ncpus,
+def get_job_definition(account, region, container_name, job_def_name, job_param_s3uri_destination, job_param_config_json, memoryInMB, ncpus,
                        role_name):
     """
 This is the job definition for this sample job.
@@ -18,6 +18,7 @@ This is the job definition for this sample job.
         "parameters": {
             "outputdir": "/data",
             "s3destination": job_param_s3uri_destination,
+            "jsonconfig": job_param_config_json,
             "log_level": "INFO"
 
         },
@@ -29,6 +30,8 @@ This is the job definition for this sample job.
             "command": [
                 "main.py",
                 "Ref::outputdir",
+                "--json-config",
+                "Ref::jsonconfig",
                 "--s3uri",
                 "Ref::s3destination",
                 "--log-level",
