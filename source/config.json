@@ -2,6 +2,9 @@
   "FtpDownloader": {
     "host": "ftp.ncbi.nlm.nih.gov",
     "reg_ex": "pubmed.*\\.xml\\.gz$",
-    "ftp_path":"/pubmed/baseline/"
+    "ftp_path": "/pubmed/baseline/"
+  },
+  "FtpDownloaderPostProcess": {
+    "num_workers": 3
   }
 }

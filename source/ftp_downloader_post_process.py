@@ -11,9 +11,19 @@ Post processing decorater logic for FtpDownloader
 
 class FtpDownloaderPostProcess:
 
-    def __init__(self, ftp_downloader, post_processor):
+    def __init__(self, ftp_downloader, post_processor, num_workers=None, config_dict=None):
         self.post_processor = post_processor
         self.ftp_downloader = ftp_downloader
+        self.num_workers = num_workers or self._get_from_config(config_dict, "num_workers", 5)
+
+    @staticmethod
+    def _get_from_config(config_dict, key, default_value):
+        value = default_value
+        if config_dict is not None:
+            cls_name = "FtpDownloaderPostProcess"
+            if config_dict.get(cls_name, None) is not None:
+                value = config_dict[cls_name].get(key, 5)
+        return value
 
     @property
     def logger(self):
@@ -28,7 +38,7 @@ Uses worker queues to perform the postprocessing
         # use thread pool to parallel process
         q = Queue()
 
-        max_workers = 5
+        max_workers = self.num_workers
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             # Set up workers
             futures = []

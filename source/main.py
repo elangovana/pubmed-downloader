@@ -26,7 +26,7 @@ def run(local_path, config_file=None, config_str=None, s3uri=None):
 
     downloader_ftp = FtpDownloader.load_from_config(config_dict)
     # Wrap the downloader_ftp with a post processing decorater to upload to s3
-    downloader = FtpDownloaderPostProcess(downloader_ftp, lambda x: post_processor(x, s3uri))
+    downloader = FtpDownloaderPostProcess(downloader_ftp, lambda x: post_processor(x, s3uri), config_dict=config_dict)
 
     list(downloader.iterate(local_path=local_path))
 
