@@ -55,3 +55,6 @@ Downloads the entire pubmed abstracts as in from pubmed using FTP as detailed in
 ```bash
 docker run -v /tmp:/data lanax/pubmed-downloader main.py "/data" --s3uri "s3://mybucket/prefix" --json-config '{"FtpDownloader": {  "host": "ftp.ncbi.nlm.nih.gov","reg_ex": "pubmed19n0499\\.xml\\.gz$","ftp_path":"/pubmed/baseline/"}, "FtpDownloaderPostProcess": { "num_workers": 2 }}'
 ```
+
+## How to run on AWS batch
+See [aws_batch/README.md](aws_batch/README.md) 

@@ -9,7 +9,7 @@
     ```bash
     pip install -r aws_batch/requirements.txt
     ``` 
-4. Make sure you have registered the docker image with ECS as detailed in the main [README.md](../README.md) 
+4. Make sure you have registered the docker image using the docker file [../source/Dockerfile](../source/Dockerfile)
 
 
 ## How to run
@@ -18,7 +18,7 @@
     ```bash
     export PYTHONPATH=./aws_batch
     
-    python ./source/main.py ./tmp --s3uri "s3://mybucket/pubmed-json/" --json-config '{"FtpDownloader": {  "host": "ftp.ncbi.nlm.nih.gov","reg_ex": "pubmed19n049.\\.xml\\.gz$","ftp_path":"/pubmed/baseline/"}, "FtpDownloaderPostProcess": {    "num_workers": 2 }}'
+    python ./source/main.py ./tmp --s3uri "s3://mybucket/pubmed-json/" --json-config '{"FtpDownloader": {  "host": "ftp.ncbi.nlm.nih.gov","reg_ex": "pubmed19n049.\\.xml\\.gz$","ftp_path":"/pubmed/baseline/"}, "FtpDownloaderPostProcess": {    "num_workers": 10 }}'
 
     
     #For full details
@@ -26,6 +26,6 @@
 
     ```
 
-2. If you go to the AWS Batch console -- Job definition , you will see the new job called aws_batch_python_sample.
+2. If you go to the AWS Batch console -- Job definition , you will see the new job called pubmed_downloader.
 
 5. You can then trigger a new job through the AWS Batch console. Pass in the name of the s3destination as one of the parameters in the job.
