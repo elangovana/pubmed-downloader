@@ -52,8 +52,9 @@ Uses worker queues to perform the postprocessing
                     yield f
             finally:
                 # Stop processing
-                # Not doing a queue to join, because if the all workers fail this will hang...
+                # Not doing a queue to join, because if all workers fail this will hang with items still left in q...
                 # q.join()
+
                 # poison pill
                 for i in range(max_workers):
                     q.put(None)
