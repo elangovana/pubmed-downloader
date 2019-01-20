@@ -18,7 +18,8 @@
     ```bash
     export PYTHONPATH=./aws_batch
     
-    python aws_batch/register_sample_job.py <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_DEFAULT_REGION>.amazonaws.com/aws-batch-sample-python:latest <s3bucketname>
+    python ./source/main.py ./tmp --s3uri "s3://mybucket/pubmed-json/" --json-config '{"FtpDownloader": {  "host": "ftp.ncbi.nlm.nih.gov","reg_ex": "pubmed19n049.\\.xml\\.gz$","ftp_path":"/pubmed/baseline/"}, "FtpDownloaderPostProcess": {    "num_workers": 2 }}'
+
     
     #For full details
     python aws_batch/register_sample_job.py -h 
